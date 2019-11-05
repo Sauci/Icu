@@ -12,9 +12,20 @@ def test_sws_00138():
     configuration set shall be given. Instead a NULL pointer shall be passed to the initialization function.
     """
 
+    # TODO: move this test to correct position in file. currently, global variable is not initialized after each
+    #  instantiation of IcuTest object.
     handle = IcuTest(DefaultConfig(), initialize=False)
     handle.lib.Icu_Init(handle.ffi.NULL)
     handle.det_report_error.assert_not_called()
+
+
+def test_sws_00060():
+    """
+    The function Icu_Init shall set the module mode to ICU_MODE_NORMAL.
+    """
+
+    handle = IcuTest(DefaultConfig())
+    assert handle.lib.Icu_Mode == handle.lib.ICU_MODE_NORMAL
 
 
 def test_sws_00220():

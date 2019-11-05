@@ -134,12 +134,12 @@ LOCAL_INLINE void Icu_ReportError(uint8 instanceId, uint8 apiId, uint8 errorId)
  * @{
  */
 
-#define Icu_START_SEC_VAR_FAST_POWER_ON_INIT_BOOLEAN
+#define Icu_START_SEC_VAR_FAST_INIT_BOOLEAN
 #include "Icu_MemMap.h"
 
 static boolean Icu_Initialized = FALSE;
 
-#define Icu_STOP_SEC_VAR_FAST_POWER_ON_INIT_BOOLEAN
+#define Icu_STOP_SEC_VAR_FAST_INIT_BOOLEAN
 #include "Icu_MemMap.h"
 
 /** @} */
@@ -163,6 +163,14 @@ static boolean Icu_Initialized = FALSE;
  * @addtogroup ICU_C_GVDEF
  * @{
  */
+
+#define Icu_START_SEC_VAR_FAST_INIT_BOOLEAN
+#include "Icu_MemMap.h"
+
+Icu_ModeType Icu_Mode = ICU_MODE_SLEEP;
+
+#define Icu_STOP_SEC_VAR_FAST_INIT_BOOLEAN
+#include "Icu_MemMap.h"
 
 /** @} */
 
@@ -195,6 +203,9 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
         }
 
         Icu_Initialized = TRUE;
+
+        /* SWS_Icu_00060: The function Icu_Init shall set the module mode to ICU_MODE_NORMAL. */
+        Icu_Mode = ICU_MODE_NORMAL;
     }
     else
     {
