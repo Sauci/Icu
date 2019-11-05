@@ -1,0 +1,16 @@
+.idea
+.pytest_cache
+*pycache*
+*build*
+doc/*
+extern/*
+!extern/CMakeLists.txt
+generated/*.c
+generated/*.h
+generated/script/__pycache__/*
+report/*
+test/ffi/cffi_config.py
+test/ffi/*.o
+test/ffi/*.so
+test/ffi/*.gcno
+test/ffi/*.gcda

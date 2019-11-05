@@ -1,0 +1,17 @@
+#ifndef ICU_PBCFG_H
+#define ICU_PBCFG_H
+
+#ifndef ICU_TYPES_H
+#include "Icu_Types.h"
+#endif /* #ifndef ICU_TYPES_H */
+
+#define Icu_START_SEC_CONST_UNSPECIFIED
+#include "Icu_MemMap.h"
+
+extern const Icu_ConfigType Icu_Config[0x01u];
+
+#define Icu_STOP_SEC_CONST_UNSPECIFIED
+#include "Icu_MemMap.h"
+
+#endif /* #ifndef ICU_PBCFG_H */
+

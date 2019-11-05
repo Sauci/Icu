@@ -1,0 +1,11 @@
+language: generic
+
+services: docker
+
+before_install:
+  - docker build -t test .
+
+script:
+  - cc_token=7f77e87f-bb1a-4959-bf39-cce6fcc324d4
+  - cc_post="bash <(curl -s https://codecov.io/bash) -s /usr/project/build -t $cc_token"
+  - docker run -v $(pwd):/usr/project $(bash <(curl -s https://codecov.io/env)) test /bin/bash -c "mkdir build && cd build;cmake .. -DICU_ENABLE_TEST=ON;make all;ctest -V;$cc_post"
