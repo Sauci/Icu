@@ -205,12 +205,24 @@ typedef struct
     Icu_ValueType PeriodTime;
 } Icu_DutyCycleType;
 
+/* SRS_Icu_12368 */
+typedef struct
+{
+    uint16 IcuChannelId; /* ECUC_Icu_00027 */
+    Icu_ActivationType IcuDefaultStartEdge; /* ECUC_Icu_00222 */
+    Icu_MeasurementModeType IcuMeasurementMode; /* ECUC_Icu_00223 */
+    boolean IcuWakeupCapability; /* ECUC_Icu_00224 */
+    void (*Icu_SignalNotification)(void);
+    /* TODO: add support for selectable Port pin (see SRS_Icu_12368). */
+} Icu_ChannelConfigType;
+
 /**
  * @brief This type contains initialization data
  */
 typedef struct
 {
-    uint32 dummy;
+    const Icu_ChannelConfigType *pChannelConfig;
+    const uint32 channelCount;
 } Icu_ConfigType;
 
 /** @} */

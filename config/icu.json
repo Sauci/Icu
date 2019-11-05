@@ -1,0 +1,29 @@
+{
+  "channels": [
+    {
+      "channel_id": 0,
+      "activation_type": "ICU_RISING_EDGE",
+      "measurement_mode": "ICU_MODE_EDGE_COUNTER",
+      "wakeup_capable": true,
+      "notification_function": "my_function"
+    },
+    {
+      "channel_id": 1,
+      "activation_type": "ICU_BOTH_EDGES",
+      "measurement_mode": "ICU_MODE_SIGNAL_EDGE_DETECT",
+      "notification_function": null
+    },
+    {
+      "channel_id": 2,
+      "activation_type": "ICU_FALLING_EDGE",
+      "measurement_mode": "ICU_MODE_SIGNAL_MEASUREMENT",
+      "notification_function": null
+    },
+    {
+      "channel_id": 3,
+      "activation_type": "ICU_RISING_EDGE",
+      "measurement_mode": "ICU_MODE_TIMESTAMP",
+      "notification_function": null
+    }
+  ]
+}

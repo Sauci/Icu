@@ -1,8 +1,48 @@
 #include "Icu_PBcfg.h"
+{% for channel in channels%}
+    {%- if channel.notification_function is not none %}
+extern void {{channel.notification_function}}(void);
+    {%- endif %}
+{%- endfor %}
 
+#define Icu_START_SEC_CONST_UNSPECIFIED
+#include "Icu_MemMap.h"
+
+const Icu_ChannelConfigType Icu_ChannelConfig[{{'0x%04Xu' % channels|length}}] =
+{
+    {%- for channel in channels%}
+    {
+        {{'0x%04Xu' % channel.channel_id}},
+        {{channel.activation_type}},
+        {{channel.measurement_mode}},
+        {%- if channel.wakeup_capable %}
+        TRUE,
+        {%- else %}
+        FALSE,
+        {%- endif %}
+        {%- if channel.notification_function is not none %}
+        {{channel.notification_function}}
+        {%- else %}
+        NULL_PTR
+        {%- endif %}
+    },
+    {%- endfor %}
+};
+
+#define Icu_STOP_SEC_CONST_UNSPECIFIED
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CONST_UNSPECIFIED
+#include "Icu_MemMap.h"
 
 const Icu_ConfigType Icu_Config[0x01u] =
 {
-    0x00u /* dummy */
+    {
+        &Icu_ChannelConfig[0x00u],
+        {{'0x%04Xu' % channels|length}}
+    }
 };
+
+#define Icu_STOP_SEC_CONST_UNSPECIFIED
+#include "Icu_MemMap.h"
 

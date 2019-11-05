@@ -53,5 +53,11 @@ class Config(dict):
 class DefaultConfig(Config):
     def __init__(self):
         super(DefaultConfig, self).__init__({
-            "configurations": []
+            'channels': [{
+                'channel_id': 0,
+                'activation_type': 'ICU_RISING_EDGE',
+                'measurement_mode': 'ICU_MODE_EDGE_COUNTER',
+                'wakeup_capable': True,
+                'notification_function': None
+            }]
         })

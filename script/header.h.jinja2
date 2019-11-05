@@ -8,7 +8,7 @@
 #define Icu_START_SEC_CONST_UNSPECIFIED
 #include "Icu_MemMap.h"
 
-extern const Icu_ConfigType Icu_Config[0x01u];
+extern const Icu_ConfigType Icu_Config[{{'0x%04Xu' % channels|length}}];
 
 #define Icu_STOP_SEC_CONST_UNSPECIFIED
 #include "Icu_MemMap.h"

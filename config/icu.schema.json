@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "channel_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "activation_type": {
+            "$ref": "#/definitions/activation_type"
+          },
+          "measurement_mode": {
+            "$ref": "#/definitions/measurement_mode"
+          },
+          "wakeup_capable": {
+            "type": "boolean",
+            "deprecationMessage": "not currently supported, needs EcuM module",
+            "default": false
+          },
+          "notification_function": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "channel_id",
+          "activation_type",
+          "measurement_mode",
+          "notification_function"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 4
+    }
+  },
+  "required": [
+    "channels"
+  ],
+  "definitions": {
+    "activation_type": {
+      "type": "string",
+      "enum": [
+        "ICU_RISING_EDGE",
+        "ICU_FALLING_EDGE",
+        "ICU_BOTH_EDGES"
+      ]
+    },
+    "measurement_mode": {
+      "type": "string",
+      "enum": [
+        "ICU_MODE_SIGNAL_EDGE_DETECT",
+        "ICU_MODE_SIGNAL_MEASUREMENT",
+        "ICU_MODE_TIMESTAMP",
+        "ICU_MODE_EDGE_COUNTER"
+      ]
+    }
+  }
+}

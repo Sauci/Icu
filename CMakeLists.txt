@@ -42,3 +42,5 @@ if (${ICU_ENABLE_TEST})
         --junitxml=./report/${PROJECT_NAME}.xml
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif ()
+
+add_subdirectory(generated)
