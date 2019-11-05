@@ -12,11 +12,21 @@ def test_sws_00138():
     configuration set shall be given. Instead a NULL pointer shall be passed to the initialization function.
     """
 
-    handle = IcuTest(DefaultConfig(), initialize=True)
+    handle = IcuTest(DefaultConfig(), initialize=False)
     handle.lib.Icu_Init(handle.ffi.NULL)
     handle.det_report_error.assert_not_called()
-    handle.det_report_runtime_error.assert_not_called()
-    handle.det_report_transient_fault.assert_not_called()
+
+
+def test_sws_00220():
+    """
+    If development error detection for the ICU module is enabled and the function Icu_Init is called when the ICU driver
+    and hardware are already initialized, the function Icu_Init shall raise development error ICU_E_ALREADY_INITIALIZED
+    and return without any action.
+    """
+
+    handle = IcuTest(DefaultConfig(), initialize=True)
+    handle.lib.Icu_Init(handle.ffi.NULL)
+    handle.det_report_error.assert_called_once_with(ANY, ANY, ANY, handle.define('ICU_E_ALREADY_INITIALIZED'))
 
 
 @pytest.mark.parametrize('code_name, value', [pytest.param('ICU_E_PARAM_POINTER', 0x0A),

@@ -134,6 +134,14 @@ LOCAL_INLINE void Icu_ReportError(uint8 instanceId, uint8 apiId, uint8 errorId)
  * @{
  */
 
+#define Icu_START_SEC_VAR_FAST_POWER_ON_INIT_BOOLEAN
+#include "Icu_MemMap.h"
+
+static boolean Icu_Initialized = FALSE;
+
+#define Icu_STOP_SEC_VAR_FAST_POWER_ON_INIT_BOOLEAN
+#include "Icu_MemMap.h"
+
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
@@ -169,7 +177,29 @@ LOCAL_INLINE void Icu_ReportError(uint8 instanceId, uint8 apiId, uint8 errorId)
 
 void Icu_Init(const Icu_ConfigType *ConfigPtr)
 {
-    (void)ConfigPtr;
+    /* SWS_Icu_00220: If development error detection for the ICU module is enabled and the function
+     * Icu_Init is called when the ICU driver and hardware are already initialized, the function
+     * Icu_Init shall raise development error ICU_E_ALREADY_INITIALIZED and return without any
+     * action. */
+    if (Icu_Initialized == FALSE)
+    {
+        /* SWS_Icu_00138: The initialization function of this module shall always have a pointer as
+         * a parameter, even though for Variant PC no configuration set shall be given. Instead a
+         * NULL pointer shall be passed to the initialization function. */
+        if (ConfigPtr != NULL_PTR)
+        {
+        }
+        else
+        {
+            /* MISRA C, do nothing. */
+        }
+
+        Icu_Initialized = TRUE;
+    }
+    else
+    {
+        Icu_ReportError(0x00u, ICU_INIT_API_ID, ICU_E_ALREADY_INITIALIZED);
+    }
 }
 
 void Icu_DeInit(void)
