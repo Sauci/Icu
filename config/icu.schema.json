@@ -42,8 +42,8 @@
           "notification_function"
         ]
       },
-      "minItems": 1,
-      "maxItems": 4
+      "minItems": 6,
+      "maxItems": 6
     }
   },
   "required": [
