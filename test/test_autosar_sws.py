@@ -36,7 +36,7 @@ def test_sws_00220():
     and return without any action.
     """
 
-    handle = IcuTest(DefaultConfig(), initialize=True)
+    handle = IcuTest(DefaultConfig())
     handle.lib.Icu_Init(handle.ffi.NULL)
     handle.det_report_error.assert_called_once_with(ANY, ANY, ANY, handle.define('ICU_E_ALREADY_INITIALIZED'))
 

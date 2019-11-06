@@ -49,10 +49,6 @@ extern "C" {
 
 #include "Icu.h"
 
-#if (ICU_DEV_ERROR_DETECT == STD_ON)
-
-#endif /* #if (ICU_DEV_ERROR_DETECT == STD_ON) */
-
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
