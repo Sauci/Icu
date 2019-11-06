@@ -60,6 +60,8 @@ extern "C" {
  * @{
  */
 
+#define ICU_ECAP_CHANNEL_COUNT (0x06u)
+
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
@@ -73,6 +75,8 @@ extern "C" {
 
 typedef struct
 {
+    Icu_ChannelType channel_id_ext;
+    Icu_ChannelType channel_id_int;
     Icu_InputStateType input_state;
 } Icu_ChannelRtType;
 
@@ -112,6 +116,14 @@ LOCAL_INLINE void Icu_ReportError(uint8 instanceId, uint8 apiId, uint8 errorId)
  * @addtogroup ICU_C_LFDECL
  * @{
  */
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+static Std_ReturnType Icu_GetRtChannel(Icu_ChannelType channel, Icu_ChannelRtType **pChannel);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
 
 /** @} */
 
@@ -369,7 +381,39 @@ void Icu_EnableNotificationAsync(Icu_ChannelType Channel)
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
-/* global scheduled function definitions.                                                         */
+/* local function definitions (static). */
+/*------------------------------------------------------------------------------------------------*/
+
+/**
+ * @addtogroup CANTP_C_LFDEF
+ * @{
+ */
+
+static Std_ReturnType Icu_GetRtChannel(Icu_ChannelType channel, Icu_ChannelRtType **pChannel)
+{
+    Std_ReturnType result = E_NOT_OK;
+    Icu_ChannelRtType *p_channel_rt = NULL_PTR;
+    uint32_least idx;
+
+    for (idx = 0x00u; idx < ICU_ECAP_CHANNEL_COUNT; idx++)
+    {
+        if (Icu_Rt[idx].channel_id_ext == channel)
+        {
+            p_channel_rt = &Icu_Rt[idx];
+            result = E_OK;
+            break;
+        }
+    }
+
+    *pChannel = p_channel_rt;
+
+    return result;
+}
+
+/** @} */
+
+/*------------------------------------------------------------------------------------------------*/
+/* global scheduled function definitions. */
 /*------------------------------------------------------------------------------------------------*/
 
 /**
@@ -380,7 +424,7 @@ void Icu_EnableNotificationAsync(Icu_ChannelType Channel)
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
-/* global callback function definitions.                                                          */
+/* global callback function definitions. */
 /*------------------------------------------------------------------------------------------------*/
 
 /**
