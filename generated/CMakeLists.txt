@@ -1,13 +1,13 @@
 add_custom_command(OUTPUT
     ${CMAKE_CURRENT_SOURCE_DIR}/Icu_PBcfg.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Icu_PBcfg.h
-    DEPENDS ${CANTP_CONFIG_FILEPATH}
+    DEPENDS ${ICU_CONFIG_FILEPATH}
     DEPENDS ${PROJECT_SOURCE_DIR}/script/source.c.jinja2
     DEPENDS ${PROJECT_SOURCE_DIR}/script/header.h.jinja2
     COMMAND bsw_code_gen
     -schema ${PROJECT_SOURCE_DIR}/config/icu.schema.json
     -template_directory ${PROJECT_SOURCE_DIR}/script
-    ${PROJECT_SOURCE_DIR}/config/icu.json
+    ${ICU_CONFIG_FILEPATH}
     ${CMAKE_CURRENT_SOURCE_DIR}/Icu_PBcfg.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Icu_PBcfg.h
     COMMENT "generating post-build configuration files")

@@ -4,6 +4,8 @@ project(Icu VERSION 0.1.0 LANGUAGES C)
 
 set(AUTOSAR_STD_HEADER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/test/stub/common CACHE FILEPATH
     "path to directory containing Std_Types.h and ComStack_Types.h.")
+set(ICU_CONFIG_FILEPATH ${CMAKE_CURRENT_SOURCE_DIR}/config/icu.json CACHE FILEPATH
+    "path to configuration file used to generate post-build configuration.")
 option(ICU_ENABLE_TEST "enables/disables tests." OFF)
 option(ENABLE_DET "enables/disables development error detection." ON)
 
