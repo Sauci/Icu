@@ -37,8 +37,9 @@ extern "C" {
 
 /**
  * @brief Numeric identifier of an ICU channel
+ * @note According to ECUC_Icu_00027, this type must be able to hold values in range 0x00..0xFFFF.
  */
-typedef uint32 Icu_ChannelType;
+typedef uint16 Icu_ChannelType;
 
 /**
  * @brief Width of the buffer for timestamp ticks and measured elapsed timeticks
