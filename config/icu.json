@@ -5,37 +5,43 @@
       "activation_type": "ICU_RISING_EDGE",
       "measurement_mode": "ICU_MODE_EDGE_COUNTER",
       "wakeup_capable": true,
-      "notification_function": "my_function"
+      "notification_function": "my_function",
+      "prescaler": 0
     },
     {
       "channel_id": 2,
       "activation_type": "ICU_BOTH_EDGES",
       "measurement_mode": "ICU_MODE_SIGNAL_EDGE_DETECT",
-      "notification_function": null
+      "notification_function": null,
+      "prescaler": 0
     },
     {
       "channel_id": 3,
       "activation_type": "ICU_FALLING_EDGE",
       "measurement_mode": "ICU_MODE_SIGNAL_MEASUREMENT",
-      "notification_function": null
+      "notification_function": null,
+      "prescaler": 0
     },
     {
       "channel_id": 4,
       "activation_type": "ICU_RISING_EDGE",
       "measurement_mode": "ICU_MODE_TIMESTAMP",
-      "notification_function": null
+      "notification_function": null,
+      "prescaler": 0
     },
     {
       "channel_id": 5,
       "activation_type": "ICU_RISING_EDGE",
       "measurement_mode": "ICU_MODE_TIMESTAMP",
-      "notification_function": null
+      "notification_function": null,
+      "prescaler": 0
     },
     {
       "channel_id": 6,
       "activation_type": "ICU_RISING_EDGE",
       "measurement_mode": "ICU_MODE_TIMESTAMP",
-      "notification_function": null
+      "notification_function": null,
+      "prescaler": 0
     }
   ]
 }

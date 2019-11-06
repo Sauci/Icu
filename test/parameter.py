@@ -15,6 +15,7 @@ class DefaultConfig(Config):
     def __init__(self):
         default_channel = {
             'channel_id': 0,
+            'prescaler': 0,
             'activation_type': 'ICU_RISING_EDGE',
             'measurement_mode': 'ICU_MODE_EDGE_COUNTER',
             'wakeup_capable': True,

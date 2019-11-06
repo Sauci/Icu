@@ -13,6 +13,7 @@ const Icu_ChannelConfigType Icu_ChannelConfig[{{'0x%04Xu' % channels|length}}] =
     {%- for channel in channels%}
     {
         {{'0x%04Xu' % channel.channel_id}},
+        {{'0x%04Xu' % channel.prescaler}},
         {{channel.activation_type}},
         {{channel.measurement_mode}},
         {%- if channel.wakeup_capable %}

@@ -210,6 +210,7 @@ typedef struct
 typedef struct
 {
     uint16 IcuChannelId; /* ECUC_Icu_00027 */
+    uint16 Prescaler;
     Icu_ActivationType IcuDefaultStartEdge; /* ECUC_Icu_00222 */
     Icu_MeasurementModeType IcuMeasurementMode; /* ECUC_Icu_00223 */
     boolean IcuWakeupCapability; /* ECUC_Icu_00224 */
