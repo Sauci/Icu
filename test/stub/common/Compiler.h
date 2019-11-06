@@ -22,6 +22,13 @@ extern "C" {
 /*lint -save */
 /*lint -e9026 [MISRA 2012 Directive 4.9, advisory] */
 
+#if (ICU_BUILD_CFFI_INTERFACE == STD_ON)
+
+#define REG_READ_16(address) \
+    0x0000u
+
+#else
+
 /**
  * @brief read value from 16 bit register.
  * @param address register's address
@@ -33,10 +40,18 @@ extern "C" {
 (*(volatile uint16 *)(address)) \
 /*lint -restore */
 
+#endif /* #if (ICU_BUILD_CFFI_INTERFACE == STD_ON) */
+
 /*lint -restore */
 
 /*lint -save */
 /*lint -e9026 [MISRA 2012 Directive 4.9, advisory] */
+
+#if (ICU_BUILD_CFFI_INTERFACE == STD_ON)
+
+#define REG_WRITE_16(address, value)
+
+#else
 
 /**
  * @brief write direct value to 16 bit register, using the '=' operator.
@@ -50,10 +65,18 @@ extern "C" {
 (*(volatile uint16 *)(address) = value) \
 /*lint -restore */
 
+#endif /* #if (ICU_BUILD_CFFI_INTERFACE == STD_ON) */
+
 /*lint -restore */
 
 /*lint -save */
 /*lint -e9026 [MISRA 2012 Directive 4.9, advisory] */
+
+#if (ICU_BUILD_CFFI_INTERFACE == STD_ON)
+
+#define REG_WRITE_32(address, value)
+
+#else
 
 /**
  * @brief write direct value to 32 bit register, using the '=' operator.
@@ -67,39 +90,7 @@ extern "C" {
 (*(volatile uint32 *)(address) = value) \
 /*lint -restore */
 
-/*lint -restore */
-
-/*lint -save */
-/*lint -e9026 [MISRA 2012 Directive 4.9, advisory] */
-
-/**
- * @brief set bit(s) to 16 bit register, using the '|=' operator.
- * @param address register's address
- * @param value value to write
- */
-#define REG_SET_16(address, value) \
-/*lint -save */ \
-/*lint -e9078 [MISRA 2012 Rule 11.4, advisory] */ \
-/*lint -e923 [MISRA 2012 Rule 11.6, required] */ \
-(*(volatile uint16 *)(address) |= value) \
-/*lint -restore */
-
-/*lint -restore */
-
-/*lint -save */
-/*lint -e9026 [MISRA 2012 Directive 4.9, advisory] */
-
-/**
- * @brief set bit(s) to 32 bit register, using the '|=' operator.
- * @param address register's address
- * @param value value to write
- */
-#define REG_SET_32(address, value) \
-/*lint -save */ \
-/*lint -e9078 [MISRA 2012 Rule 11.4, advisory] */ \
-/*lint -e923 [MISRA 2012 Rule 11.6, required] */ \
-(*(volatile uint32 *)(address) |= value) \
-/*lint -restore */
+#endif /* #if (ICU_BUILD_CFFI_INTERFACE == STD_ON) */
 
 /*lint -restore */
 
