@@ -7,6 +7,14 @@ from unittest.mock import ANY
 from . import *
 
 
+@pytest.mark.skip(reason='need to find a way to test it')
+def test_sws_00006():
+    """
+    The function Icu_Init shall initialize all relevant registers of the configured hardware with the values of the
+    structure referenced by the parameter ConfigPtr.
+    """
+
+
 def test_sws_00138():
     """
     The initialization function of this module shall always have a pointer as a parameter, even though for Variant PC no
@@ -18,6 +26,13 @@ def test_sws_00138():
     handle = IcuTest(DefaultConfig(), initialize=False)
     handle.lib.Icu_Init(handle.ffi.NULL)
     handle.det_report_error.assert_not_called()
+
+
+@pytest.mark.skip(reason='need to find a way to test it')
+def test_sws_00040():
+    """
+    The function Icu_Init shall set all used ICU channels to status ICU_IDLE.
+    """
 
 
 def test_sws_00060():

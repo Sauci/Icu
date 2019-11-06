@@ -60,6 +60,28 @@ extern "C" {
  * @{
  */
 
+#define ECAP_TSCTR_OFFSET (0x00u)
+#define ECAP_CTRPHS_OFFSET (0x04u)
+#define ECAP_CAP1_OFFSET (0x08u)
+#define ECAP_CAP2_OFFSET (0x0Cu)
+#define ECAP_CAP3_OFFSET (0x10u)
+#define ECAP_CAP4_OFFSET (0x14u)
+#define ECAP_ECCTL2_OFFSET (0x28u)
+#define ECAP_ECCTL1_OFFSET (0x2Au)
+// #define ECAP_ECFLG_OFFSET (0x2Cu)
+#define ECAP_ECEINT_OFFSET (0x2Eu)
+#define ECAP_ECFRC_OFFSET (0x30u)
+#define ECAP_ECCLR_OFFSET (0x32u)
+
+#define ECAP1_BASE_ADDRESS (0xFCF79300u)
+#define ECAP2_BASE_ADDRESS (0xFCF79400u)
+#define ECAP3_BASE_ADDRESS (0xFCF79500u)
+#define ECAP4_BASE_ADDRESS (0xFCF79600u)
+#define ECAP5_BASE_ADDRESS (0xFCF79700u)
+#define ECAP6_BASE_ADDRESS (0xFCF79800u)
+
+#define ECAP_ECCTL1_CAPPOL_MASK (0x01u | (0x01u << 0x02u) | (0x01u << 0x04u) | (0x01u << 0x06u))
+
 #define ICU_ECAP_CHANNEL_COUNT (0x06u)
 
 /** @} */
@@ -136,6 +158,19 @@ static Std_ReturnType Icu_GetRtChannel(Icu_ChannelType channel, Icu_ChannelRtTyp
  * @{
  */
 
+#define Icu_START_SEC_CONST_32
+#include "Icu_MemMap.h"
+
+static const uint32 Icu_EcapBaseAddr[ICU_ECAP_CHANNEL_COUNT] = {ECAP1_BASE_ADDRESS,
+                                                                ECAP2_BASE_ADDRESS,
+                                                                ECAP3_BASE_ADDRESS,
+                                                                ECAP4_BASE_ADDRESS,
+                                                                ECAP5_BASE_ADDRESS,
+                                                                ECAP6_BASE_ADDRESS};
+
+#define Icu_STOP_SEC_CONST_32
+#include "Icu_MemMap.h"
+
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
@@ -206,21 +241,89 @@ Icu_ModeType Icu_Mode = ICU_MODE_SLEEP;
 
 void Icu_Init(const Icu_ConfigType *ConfigPtr)
 {
+    uint32 idx;
+    uint16 tmp_16_reg;
+    uint32 ecap_base_addr;
+    const Icu_ChannelConfigType *p_channel_config;
+
     /* SWS_Icu_00220: If development error detection for the ICU module is enabled and the function
      * Icu_Init is called when the ICU driver and hardware are already initialized, the function
      * Icu_Init shall raise development error ICU_E_ALREADY_INITIALIZED and return without any
      * action. */
     if (Icu_Initialized == FALSE)
     {
-        /* SWS_Icu_00138: The initialization function of this module shall always have a pointer as
-         * a parameter, even though for Variant PC no configuration set shall be given. Instead a
-         * NULL pointer shall be passed to the initialization function. */
-        if (ConfigPtr != NULL_PTR)
+        for (idx = 0x00u; idx < ICU_ECAP_CHANNEL_COUNT; idx++)
         {
-        }
-        else
-        {
-            /* MISRA C, do nothing. */
+            ecap_base_addr = Icu_EcapBaseAddr[idx];
+
+            REG_WRITE_32(ecap_base_addr + ECAP_TSCTR_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_CTRPHS_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_CAP1_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_CAP2_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_CAP3_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_CAP4_OFFSET, 0x00000000u);
+            /* eCAP ECFLG register is read-only (SPNU563A 33.5.9). */
+            REG_WRITE_32(ecap_base_addr + ECAP_ECEINT_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_ECFRC_OFFSET, 0x00000000u);
+            REG_WRITE_32(ecap_base_addr + ECAP_ECCLR_OFFSET, 0x00000000u);
+
+            /* SWS_Icu_00138: The initialization function of this module shall always have a pointer
+             * as a parameter, even though for Variant PC no configuration set shall be given.
+             * Instead a NULL pointer shall be passed to the initialization function. */
+            if (ConfigPtr != NULL_PTR)
+            {
+                p_channel_config = &ConfigPtr->pChannelConfig[idx];
+
+                Icu_Rt[idx].channel_id_ext = p_channel_config->IcuChannelId;
+                Icu_Rt[idx].channel_id_int = idx;
+
+                /* SWS_Icu_00006: The function Icu_Init shall initialize all relevant registers of
+                 * the configured hardware with the values of the structure referenced by the
+                 * parameter ConfigPtr. */
+                Icu_SetActivationCondition(p_channel_config->IcuChannelId,
+                                           p_channel_config->IcuDefaultStartEdge);
+
+                tmp_16_reg = REG_READ_16(ecap_base_addr + ECAP_ECCTL1_OFFSET);
+
+                /* reset counter after event 1..4 timestamp has been captured. */
+                tmp_16_reg |= (0x01u << 0x01u);
+                tmp_16_reg |= (0x01u << 0x03u);
+                tmp_16_reg |= (0x01u << 0x05u);
+                tmp_16_reg |= (0x01u << 0x07u);
+
+                /* enable loading of CAP 1..4 registers on a capture event. */
+                tmp_16_reg |= (0x01u << 0x08u);
+
+                /* set input prescaler from configuration parameter. */
+                tmp_16_reg |= (uint16)((uint16)(p_channel_config->Prescaler >> 0x02u) << 0x09u);
+
+                REG_WRITE_16(ecap_base_addr + ECAP_ECCTL1_OFFSET, tmp_16_reg);
+                tmp_16_reg = REG_READ_16(ecap_base_addr + ECAP_ECCTL2_OFFSET);
+
+                /* run in continuous mode. */
+                tmp_16_reg &= ~(0x01u);
+
+                /* wrap after event 2 has been captured. */
+                tmp_16_reg &= ~(0x03u << 0x01u);
+                tmp_16_reg |= (0x01u << 0x01u);
+
+                /* set mode of operation to capture. */
+                tmp_16_reg &= ~(0x01u << 0x09u);
+
+                /* start timestamp counter. */
+                tmp_16_reg |= (0x01u << 0x04u);
+
+                REG_WRITE_16(ecap_base_addr + ECAP_ECCTL2_OFFSET, tmp_16_reg);
+            }
+            else
+            {
+                REG_WRITE_32(ecap_base_addr + ECAP_ECCTL2_OFFSET, 0x00000000u);
+                REG_WRITE_32(ecap_base_addr + ECAP_ECCTL1_OFFSET, 0x00000000u);
+            }
+
+            /* SWS_Icu_00040: The function Icu_Init shall set all used ICU channels to status
+             * ICU_IDLE. */
+            Icu_Rt[idx].input_state = ICU_IDLE;
         }
 
         Icu_Initialized = TRUE;
@@ -264,8 +367,43 @@ void Icu_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
 
 void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Activation)
 {
-    (void)Channel;
-    (void)Activation;
+    uint16 tmp_16_reg;
+    Icu_ChannelRtType *p_channel_rt;
+
+    if (Icu_GetRtChannel(Channel, &p_channel_rt) == E_OK)
+    {
+        const uint32 ecap_base_addr = Icu_EcapBaseAddr[p_channel_rt->channel_id_int];
+        tmp_16_reg = REG_READ_16(ecap_base_addr + ECAP_ECCTL1_OFFSET);
+
+        switch (Activation)
+        {
+            case ICU_RISING_EDGE:
+            {
+                tmp_16_reg &= ~ECAP_ECCTL1_CAPPOL_MASK;
+                break;
+            }
+            case ICU_FALLING_EDGE:
+            {
+                tmp_16_reg |= ECAP_ECCTL1_CAPPOL_MASK;
+                break;
+            }
+            case ICU_BOTH_EDGES:
+            {
+                tmp_16_reg &= ~ECAP_ECCTL1_CAPPOL_MASK;
+                tmp_16_reg |= ((0x01u << 0x02u) /* CAP2POL set to falling edge. */
+                               | (0x01u << 0x06u) /* CAP4POL set to falling edge. */
+                );
+                break;
+            }
+            default:
+            {
+                tmp_16_reg = 0x0000u;
+                break;
+            }
+        }
+
+        REG_WRITE_16(ecap_base_addr + ECAP_ECCTL1_OFFSET, tmp_16_reg);
+    }
 }
 
 void Icu_DisableNotification(Icu_ChannelType Channel)

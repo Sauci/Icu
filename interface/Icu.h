@@ -294,7 +294,7 @@ extern "C" {
 #define ICU_E_PARAM_NOTIFY_INTERVAL (0x18u)
 
 /**
- * @brief API Icu_GetVersionInfo is called and the parameter versioninfo is is invalid (e.g. NULL).
+ * @brief API Icu_GetVersionInfo is called and the parameter versioninfo is invalid (e.g. NULL).
  */
 #define ICU_E_PARAM_VINFO (0x19u)
 
