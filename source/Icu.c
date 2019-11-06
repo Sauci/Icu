@@ -71,6 +71,11 @@ extern "C" {
  * @{
  */
 
+typedef struct
+{
+    Icu_InputStateType input_state;
+} Icu_ChannelRtType;
+
 /** @} */
 
 /*------------------------------------------------------------------------------------------------*/
@@ -136,6 +141,14 @@ LOCAL_INLINE void Icu_ReportError(uint8 instanceId, uint8 apiId, uint8 errorId)
 static boolean Icu_Initialized = FALSE;
 
 #define Icu_STOP_SEC_VAR_FAST_INIT_BOOLEAN
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_VAR_FAST_INIT_UNSPECIFIED
+#include "Icu_MemMap.h"
+
+static Icu_ChannelRtType Icu_Rt[ICU_ECAP_CHANNEL_COUNT];
+
+#define Icu_STOP_SEC_VAR_FAST_INIT_UNSPECIFIED
 #include "Icu_MemMap.h"
 
 /** @} */
