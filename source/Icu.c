@@ -318,6 +318,23 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
                 tmp_16_reg |= (0x01u << 0x04u);
 
                 REG_WRITE_16(ecap_base_addr + ECAP_ECCTL2_OFFSET, tmp_16_reg);
+
+                /* enable capture events 1..4 interrupt. */
+                tmp_16_reg = (0x01u << 0x01u);
+                tmp_16_reg |= (0x01u << 0x02u);
+                tmp_16_reg |= (0x01u << 0x03u);
+                tmp_16_reg |= (0x01u << 0x04u);
+
+                /* enable counter overflow interrupt. */
+                tmp_16_reg |= (0x01u << 0x05u);
+
+                /* enable counter equal period interrupt. */
+                tmp_16_reg |= (0x01u << 0x06u);
+
+                /* enable counter equal compare interrupt. */
+                tmp_16_reg |= (0x01u << 0x07u);
+
+                REG_WRITE_16(ecap_base_addr + ECAP_ECEINT_OFFSET, tmp_16_reg);
             }
             else
             {
