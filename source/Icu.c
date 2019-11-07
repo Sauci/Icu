@@ -97,9 +97,11 @@ extern "C" {
 
 typedef struct
 {
+    uint32 hw_base_address;
     Icu_ChannelType channel_id_ext;
     Icu_ChannelType channel_id_int;
     Icu_InputStateType input_state;
+    Icu_MeasurementModeType measurement_mode;
 } Icu_ChannelRtType;
 
 /** @} */
@@ -274,8 +276,10 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
             {
                 p_channel_config = &ConfigPtr->pChannelConfig[idx];
 
+                Icu_Rt[idx].hw_base_address = ecap_base_addr;
                 Icu_Rt[idx].channel_id_ext = p_channel_config->IcuChannelId;
                 Icu_Rt[idx].channel_id_int = idx;
+                Icu_Rt[idx].measurement_mode = p_channel_config->IcuMeasurementMode;
 
                 /* SWS_Icu_00006: The function Icu_Init shall initialize all relevant registers of
                  * the configured hardware with the values of the structure referenced by the
@@ -372,8 +376,7 @@ void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Acti
 
     if (Icu_GetRtChannel(Channel, &p_channel_rt) == E_OK)
     {
-        const uint32 ecap_base_addr = Icu_EcapBaseAddr[p_channel_rt->channel_id_int];
-        tmp_16_reg = REG_READ_16(ecap_base_addr + ECAP_ECCTL1_OFFSET);
+        tmp_16_reg = REG_READ_16(p_channel_rt->hw_base_address + ECAP_ECCTL1_OFFSET);
 
         switch (Activation)
         {
@@ -402,7 +405,7 @@ void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Acti
             }
         }
 
-        REG_WRITE_16(ecap_base_addr + ECAP_ECCTL1_OFFSET, tmp_16_reg);
+        REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCTL1_OFFSET, tmp_16_reg);
     }
 }
 
@@ -497,8 +500,39 @@ Icu_ValueType Icu_GetTimeElapsed(Icu_ChannelType Channel)
 
 void Icu_GetDutyCycleValues(Icu_ChannelType Channel, Icu_DutyCycleType *DutyCycleValues)
 {
-    (void)Channel;
-    (void)DutyCycleValues;
+    Icu_ChannelRtType *p_channel_rt;
+    uint32 capture_event_1;
+    uint32 capture_event_2;
+
+    /* SWS_Icu_00180: If development error detection is enabled: the function Icu_GetDutyCycleValues
+     * shall check the parameter Channel. If Channel is invalid (invalid identifier or channel not
+     * configured for mode ICU_MODE_SIGNAL_MEASUREMENT, Duty Cycle Values), the function
+     * Icu_GetDutyCycleValues shall raise development error ICU_E_PARAM_CHANNEL. */
+    if ((Icu_GetRtChannel(Channel, &p_channel_rt) == E_OK) &&
+        (p_channel_rt->measurement_mode == ICU_MODE_SIGNAL_MEASUREMENT))
+    {
+        /* SWS_Icu_00181: If development error detection is enabled, the function
+         * Icu_GetDutyCycleValues shall check the parameter DutyCycleValues. If DutyCycleValues is
+         * invalid, the function Icu_GetDutyCycleValues shall raise development error
+         * ICU_E_PARAM_POINTER. */
+        if (DutyCycleValues != NULL_PTR)
+        {
+            capture_event_1 = REG_READ_32(p_channel_rt->hw_base_address + ECAP_CAP1_OFFSET);
+            capture_event_2 = REG_READ_32(p_channel_rt->hw_base_address + ECAP_CAP2_OFFSET);
+            DutyCycleValues->ActiveTime = capture_event_1;
+            DutyCycleValues->PeriodTime = capture_event_1 + capture_event_2;
+        }
+        else
+        {
+            Icu_ReportError(p_channel_rt->channel_id_ext,
+                            ICU_GET_DUTY_CYCLE_VALUES_API_ID,
+                            ICU_E_PARAM_POINTER);
+        }
+    }
+    else
+    {
+        Icu_ReportError(0x00u, ICU_GET_DUTY_CYCLE_VALUES_API_ID, ICU_E_PARAM_CHANNEL);
+    }
 }
 
 void Icu_GetVersionInfo(Std_VersionInfoType *versioninfo)

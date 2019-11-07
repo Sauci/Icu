@@ -49,6 +49,31 @@ extern "C" {
 
 #if (ICU_BUILD_CFFI_INTERFACE == STD_ON)
 
+#define REG_READ_32(address) \
+    0x00000000u
+
+#else
+
+/**
+ * @brief read value from 32 bit register.
+ * @param address register's address
+ */
+#define REG_READ_32(address) \
+/*lint -save */ \
+/*lint -e9078 [MISRA 2012 Rule 11.4, advisory] */ \
+/*lint -e923 [MISRA 2012 Rule 11.6, required] */ \
+(*(volatile uint32 *)(address)) \
+/*lint -restore */
+
+#endif /* #if (ICU_BUILD_CFFI_INTERFACE == STD_ON) */
+
+/*lint -restore */
+
+/*lint -save */
+/*lint -e9026 [MISRA 2012 Directive 4.9, advisory] */
+
+#if (ICU_BUILD_CFFI_INTERFACE == STD_ON)
+
 #define REG_WRITE_16(address, value)
 
 #else
