@@ -102,6 +102,7 @@ typedef struct
     Icu_ChannelType channel_id_int;
     Icu_InputStateType input_state;
     Icu_MeasurementModeType measurement_mode;
+    void (*signal_notification)(void);
 } Icu_ChannelRtType;
 
 /** @} */
@@ -145,6 +146,54 @@ LOCAL_INLINE void Icu_ReportError(uint8 instanceId, uint8 apiId, uint8 errorId)
 #include "Icu_MemMap.h"
 
 static Std_ReturnType Icu_GetRtChannel(Icu_ChannelType channel, Icu_ChannelRtType **pChannel);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+void Icu_Ecap1Interrupt(void);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+void Icu_Ecap2Interrupt(void);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+void Icu_Ecap3Interrupt(void);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+void Icu_Ecap4Interrupt(void);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+void Icu_Ecap5Interrupt(void);
+
+#define Icu_STOP_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+#define Icu_START_SEC_CODE_FAST
+#include "Icu_MemMap.h"
+
+void Icu_Ecap6Interrupt(void);
 
 #define Icu_STOP_SEC_CODE_FAST
 #include "Icu_MemMap.h"
@@ -280,6 +329,7 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
                 Icu_Rt[idx].channel_id_ext = p_channel_config->IcuChannelId;
                 Icu_Rt[idx].channel_id_int = idx;
                 Icu_Rt[idx].measurement_mode = p_channel_config->IcuMeasurementMode;
+                Icu_Rt[idx].signal_notification = p_channel_config->Icu_SignalNotification;
 
                 /* SWS_Icu_00006: The function Icu_Init shall initialize all relevant registers of
                  * the configured hardware with the values of the structure referenced by the
@@ -609,6 +659,78 @@ static Std_ReturnType Icu_GetRtChannel(Icu_ChannelType channel, Icu_ChannelRtTyp
  * @addtogroup ICU_C_GSFDEF
  * @{
  */
+
+IRQ void Icu_Ecap1Interrupt(void)
+{
+    Icu_ChannelRtType *p_channel_rt = &Icu_Rt[0x00u];
+
+    if (p_channel_rt->signal_notification != NULL_PTR)
+    {
+        p_channel_rt->signal_notification();
+    }
+
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+}
+
+IRQ void Icu_Ecap2Interrupt(void)
+{
+    Icu_ChannelRtType *p_channel_rt = &Icu_Rt[0x01u];
+
+    if (p_channel_rt->signal_notification != NULL_PTR)
+    {
+        p_channel_rt->signal_notification();
+    }
+
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+}
+
+IRQ void Icu_Ecap3Interrupt(void)
+{
+    Icu_ChannelRtType *p_channel_rt = &Icu_Rt[0x02u];
+
+    if (p_channel_rt->signal_notification != NULL_PTR)
+    {
+        p_channel_rt->signal_notification();
+    }
+
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+}
+
+IRQ void Icu_Ecap4Interrupt(void)
+{
+    Icu_ChannelRtType *p_channel_rt = &Icu_Rt[0x03u];
+
+    if (p_channel_rt->signal_notification != NULL_PTR)
+    {
+        p_channel_rt->signal_notification();
+    }
+
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+}
+
+IRQ void Icu_Ecap5Interrupt(void)
+{
+    Icu_ChannelRtType *p_channel_rt = &Icu_Rt[0x04u];
+
+    if (p_channel_rt->signal_notification != NULL_PTR)
+    {
+        p_channel_rt->signal_notification();
+    }
+
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+}
+
+IRQ void Icu_Ecap6Interrupt(void)
+{
+    Icu_ChannelRtType *p_channel_rt = &Icu_Rt[0x05u];
+
+    if (p_channel_rt->signal_notification != NULL_PTR)
+    {
+        p_channel_rt->signal_notification();
+    }
+
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+}
 
 /** @} */
 
