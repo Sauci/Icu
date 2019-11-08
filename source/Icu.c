@@ -669,7 +669,7 @@ IRQ void Icu_Ecap1Interrupt(void)
         p_channel_rt->signal_notification();
     }
 
-    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x00FFu);
 }
 
 IRQ void Icu_Ecap2Interrupt(void)
@@ -681,7 +681,7 @@ IRQ void Icu_Ecap2Interrupt(void)
         p_channel_rt->signal_notification();
     }
 
-    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x00FFu);
 }
 
 IRQ void Icu_Ecap3Interrupt(void)
@@ -693,7 +693,7 @@ IRQ void Icu_Ecap3Interrupt(void)
         p_channel_rt->signal_notification();
     }
 
-    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x00FFu);
 }
 
 IRQ void Icu_Ecap4Interrupt(void)
@@ -705,7 +705,7 @@ IRQ void Icu_Ecap4Interrupt(void)
         p_channel_rt->signal_notification();
     }
 
-    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x00FFu);
 }
 
 IRQ void Icu_Ecap5Interrupt(void)
@@ -717,7 +717,7 @@ IRQ void Icu_Ecap5Interrupt(void)
         p_channel_rt->signal_notification();
     }
 
-    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x00FFu);
 }
 
 IRQ void Icu_Ecap6Interrupt(void)
@@ -729,7 +729,7 @@ IRQ void Icu_Ecap6Interrupt(void)
         p_channel_rt->signal_notification();
     }
 
-    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x0000u);
+    REG_WRITE_16(p_channel_rt->hw_base_address + ECAP_ECCLR_OFFSET, 0x00FFu);
 }
 
 /** @} */
