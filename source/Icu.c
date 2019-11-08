@@ -349,7 +349,7 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
                 tmp_16_reg |= (0x01u << 0x08u);
 
                 /* set input prescaler from configuration parameter. */
-                tmp_16_reg |= (uint16)((uint16)(p_channel_config->Prescaler >> 0x02u) << 0x09u);
+                tmp_16_reg |= (uint16)((uint16)(p_channel_config->Prescaler >> 0x01u) << 0x09u);
 
                 REG_WRITE_16(ecap_base_addr + ECAP_ECCTL1_OFFSET, tmp_16_reg);
                 tmp_16_reg = REG_READ_16(ecap_base_addr + ECAP_ECCTL2_OFFSET);
