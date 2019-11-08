@@ -314,9 +314,9 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
             REG_WRITE_32(ecap_base_addr + ECAP_CAP3_OFFSET, 0x00000000u);
             REG_WRITE_32(ecap_base_addr + ECAP_CAP4_OFFSET, 0x00000000u);
             /* eCAP ECFLG register is read-only (SPNU563A 33.5.9). */
-            REG_WRITE_32(ecap_base_addr + ECAP_ECEINT_OFFSET, 0x00000000u);
-            REG_WRITE_32(ecap_base_addr + ECAP_ECFRC_OFFSET, 0x00000000u);
-            REG_WRITE_32(ecap_base_addr + ECAP_ECCLR_OFFSET, 0x00000000u);
+            REG_WRITE_16(ecap_base_addr + ECAP_ECEINT_OFFSET, 0x00000000u);
+            REG_WRITE_16(ecap_base_addr + ECAP_ECFRC_OFFSET, 0x00000000u);
+            REG_WRITE_16(ecap_base_addr + ECAP_ECCLR_OFFSET, 0x00000000u);
 
             /* SWS_Icu_00138: The initialization function of this module shall always have a pointer
              * as a parameter, even though for Variant PC no configuration set shall be given.
@@ -388,8 +388,8 @@ void Icu_Init(const Icu_ConfigType *ConfigPtr)
             }
             else
             {
-                REG_WRITE_32(ecap_base_addr + ECAP_ECCTL2_OFFSET, 0x00000000u);
-                REG_WRITE_32(ecap_base_addr + ECAP_ECCTL1_OFFSET, 0x00000000u);
+                REG_WRITE_16(ecap_base_addr + ECAP_ECCTL2_OFFSET, 0x00000000u);
+                REG_WRITE_16(ecap_base_addr + ECAP_ECCTL1_OFFSET, 0x00000000u);
             }
 
             /* SWS_Icu_00040: The function Icu_Init shall set all used ICU channels to status
