@@ -119,6 +119,20 @@ extern "C" {
 
 /*lint -restore */
 
+#if defined(__arm__)
+
+#define IRQ \
+/*lint -save */ \
+/*lint -e950 [MISRA 2012 Directive 2.1, required], [MISRA 2012 Rule 1.1, required], [MISRA 2012 Rule 1.2, advisory] */ \
+__attribute__((interrupt("IRQ"))) \
+/*lint -restore */
+
+#else
+
+#define IRQ
+
+#endif
+
 #ifdef __cplusplus
 }
 
